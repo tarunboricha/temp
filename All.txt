@@ -1,4 +1,3 @@
-Sure, Tarun! Here's a simplified and concise version of all three sheets (Impact, Core, and Craft) you shared. You can directly copy-paste these into your Excel file.
 
 
 ---
@@ -7,10 +6,10 @@ Sure, Tarun! Here's a simplified and concise version of all three sheets (Impact
 
 Competency	Examples	Results
 
-I work with my manager to prioritize tasks and deliver results for customers.	Prioritized an AI-based solution and delivered it without affecting sprint work.	Reduced development effort and saved team time.
-I understand and participate in core team processes.	Took part in sprint planning, bug triage, and retrospectives.	Helped improve planning and reduced spillovers.
-I deliver high-quality work with guidance from my manager.	Fixed a complex scrolling issue in the MBST script.	Improved data accuracy and customer satisfaction.
-I ask important unasked questions.	Raised questions in retros and reviews to clarify edge cases.	Prevented bugs and improved script reliability.
+I work with my manager to prioritize tasks and deliver results for customers.	I prioritized an AI-based automation task after discussion with my manager, balancing it alongside sprint work.	Delivered the solution without delays and reduced manual efforts for the team.
+I understand and participate in core team processes.	I regularly contribute in sprint planning, bug triage, and retrospectives by reviewing tasks and suggesting improvements.	Helped the team plan better and reduced estimation errors and spillovers.
+I deliver high-quality work with guidance from my manager.	I completed a complex bug fix in our MBST tool, ensuring the scroll data issue didn’t affect output quality.	Improved data accuracy and received appreciation for solving a long-standing issue.
+I ask important unasked questions.	I often ask basic but overlooked questions during retros and discussions, especially around edge cases.	This has helped catch bugs early and improve team understanding and solution quality.
 
 
 
@@ -20,15 +19,15 @@ I ask important unasked questions.	Raised questions in retros and reviews to cla
 
 Competency	Examples	Results
 
-I follow through on my commitments.	Completed tasks on time and took ownership of work.	Built trust and received appreciation.
-I’m reliable and deliver consistent work.	Finished first user story without spillover.	Maintained steady performance.
-I collaborate across the development lifecycle.	Participated in planning, testing, and deployment.	Ensured smooth delivery and fewer bugs.
-I ask questions and accept feedback.	Asked clarifying questions in reviews.	Helped improve understanding and teamwork.
-I ask for help when needed.	Asked help for scrollbar issue.	Solved it quickly and learned from it.
-I improve team processes.	Suggested reusable code patterns.	Improved script quality and maintainability.
-I share project info and trade-offs.	Shared AI integration impact during planning.	Helped team make better decisions.
-I respect team perspectives.	Accepted suggestions in code reviews.	Improved final output and collaboration.
-I support operations and solve issues.	Fixed errors from website layout changes.	Reduced failures and improved stability.
+I follow through on my commitments.	I took ownership of an AI-based feature and finished it on time, without any delays or reassignments.	Built strong trust with my manager and team for being dependable and consistent.
+I’m reliable and deliver consistent work.	Delivered multiple user stories end-to-end without spillovers and kept my sprint commitments.	Helped the team meet sprint goals and ensured steady delivery quality.
+I collaborate across the development lifecycle.	I’ve worked on design, testing, review, and deployment activities for our scripts and UI project.	Ensured smooth delivery with minimal post-release issues or rework.
+I ask questions and accept feedback.	I ask questions in meetings and feedback sessions to improve my understanding of the code and tasks.	Received better clarity and learned faster, which helped improve my code.
+I ask for help when needed.	When stuck with a scrollbar capture issue, I reached out to my tech lead for support and solved it.	Fixed the issue quickly and improved my approach for future problems.
+I improve team processes.	I suggested code patterns to reuse logic and improve maintainability across scripts.	This reduced redundancy and made future changes faster and easier.
+I share project info and trade-offs.	I informed my team about the time-cost of integrating AI in parsing logic during planning.	Helped make better prioritization decisions and align with sprint goals.
+I respect team perspectives.	During code reviews, I listen and accept feedback from peers even when ideas differ from mine.	Helped improve the solution and strengthened team collaboration.
+I support operations and solve issues.	Investigated and resolved layout change issues in websites affecting data scraping.	Reduced recurring errors and improved stability of our automation scripts.
 
 
 
@@ -38,17 +37,16 @@ I support operations and solve issues.	Fixed errors from website layout changes.
 
 Competency	Examples	Results
 
-I write clear and understandable code.	Refactored and cleaned up legacy scripts.	Easier for others to read and maintain.
-I understand code I didn’t write.	Worked on existing MBST scripts.	Integrated changes with no major issues.
-I deliver fast and good-quality work.	Balanced sprint tasks and AI module.	Delivered both on time with quality.
-I do code reviews and ask questions.	Asked questions during XPath reviews.	Helped avoid bugs and learned better.
-My code is clean, tested, and reliable.	Fixed scroll issue and tested it well.	Stopped repeated data capture failures.
-I explain my solutions clearly.	Shared OpenAI trust-name logic with team.	Approved and improved name extraction.
-I can deploy working software.	Handled updates to GitHub-hosted projects.	Smooth and error-free deployments.
+I write clear and understandable code.	I refactored old scripts by improving structure, naming, and adding inline comments.	Made it easier for team members to understand and update the codebase.
+I understand code I didn’t write.	I worked on a large codebase built by others and added new logic for trust name parsing.	Successfully made changes without breaking existing features.
+I deliver fast and good-quality work.	Balanced sprint work and an AI module task by prioritizing and managing my time well.	Delivered both tasks on time while maintaining good quality.
+I do code reviews and ask questions.	I actively take part in reviews and ask questions around logic, structure, and improvements.	This helps me learn and also contributes to better code from others.
+My code is clean, tested, and reliable.	I fixed a tricky bug related to internal scrollbars and added proper test cases for it.	Prevented future bugs and improved data extraction reliability.
+I explain my solutions clearly.	I proposed and explained my OpenAI-based name extraction logic to the team with examples.	Team approved the solution and implementation was smooth.
+I can deploy working software.	I have deployed Angular project updates and script changes after testing and validations.	Ensured successful deployment without rollback or production issues.
 
 
 
 ---
 
-Let me know if you'd like me to put this into an Excel file and share a download link.
-
+Let me know if you'd like this as an Excel sheet for easy copy-pasting!
