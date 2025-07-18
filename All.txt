@@ -1,0 +1,54 @@
+Sure, Tarun! Here's a simplified and concise version of all three sheets (Impact, Core, and Craft) you shared. You can directly copy-paste these into your Excel file.
+
+
+---
+
+✅ Sheet: Impact
+
+Competency	Examples	Results
+
+I work with my manager to prioritize tasks and deliver results for customers.	Prioritized an AI-based solution and delivered it without affecting sprint work.	Reduced development effort and saved team time.
+I understand and participate in core team processes.	Took part in sprint planning, bug triage, and retrospectives.	Helped improve planning and reduced spillovers.
+I deliver high-quality work with guidance from my manager.	Fixed a complex scrolling issue in the MBST script.	Improved data accuracy and customer satisfaction.
+I ask important unasked questions.	Raised questions in retros and reviews to clarify edge cases.	Prevented bugs and improved script reliability.
+
+
+
+---
+
+✅ Sheet: Core
+
+Competency	Examples	Results
+
+I follow through on my commitments.	Completed tasks on time and took ownership of work.	Built trust and received appreciation.
+I’m reliable and deliver consistent work.	Finished first user story without spillover.	Maintained steady performance.
+I collaborate across the development lifecycle.	Participated in planning, testing, and deployment.	Ensured smooth delivery and fewer bugs.
+I ask questions and accept feedback.	Asked clarifying questions in reviews.	Helped improve understanding and teamwork.
+I ask for help when needed.	Asked help for scrollbar issue.	Solved it quickly and learned from it.
+I improve team processes.	Suggested reusable code patterns.	Improved script quality and maintainability.
+I share project info and trade-offs.	Shared AI integration impact during planning.	Helped team make better decisions.
+I respect team perspectives.	Accepted suggestions in code reviews.	Improved final output and collaboration.
+I support operations and solve issues.	Fixed errors from website layout changes.	Reduced failures and improved stability.
+
+
+
+---
+
+✅ Sheet: Craft
+
+Competency	Examples	Results
+
+I write clear and understandable code.	Refactored and cleaned up legacy scripts.	Easier for others to read and maintain.
+I understand code I didn’t write.	Worked on existing MBST scripts.	Integrated changes with no major issues.
+I deliver fast and good-quality work.	Balanced sprint tasks and AI module.	Delivered both on time with quality.
+I do code reviews and ask questions.	Asked questions during XPath reviews.	Helped avoid bugs and learned better.
+My code is clean, tested, and reliable.	Fixed scroll issue and tested it well.	Stopped repeated data capture failures.
+I explain my solutions clearly.	Shared OpenAI trust-name logic with team.	Approved and improved name extraction.
+I can deploy working software.	Handled updates to GitHub-hosted projects.	Smooth and error-free deployments.
+
+
+
+---
+
+Let me know if you'd like me to put this into an Excel file and share a download link.
+
