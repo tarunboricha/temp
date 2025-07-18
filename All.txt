@@ -1,3 +1,19 @@
+Got it, Tarun! Let’s use something else from your work — like your contribution to reducing estimation effort by 90%, and maintaining a large set of scripts (3000+) efficiently. Here's the final updated version of Competency 1 in the Impact sheet:
+
+
+---
+
+✅ Updated Competency 1 — Sheet: Impact
+
+Competency	Examples	Results
+
+I work with my manager or team to identify and prioritize tasks that add the most value for the customer.	I worked on optimizing script logic and introduced a common approach that reduced the effort required across multiple counties.	Helped cut down estimation effort by 90%, saved team time, and improved delivery speed across 3000+ automation scripts.
+
+
+
+---
+
+Let me know if you’d like the rest of the content bundled into a downloadable format or ready for presentation.
 
 
 ---
