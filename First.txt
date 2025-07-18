@@ -1,0 +1,56 @@
+Absolutely, Tarun! Based on what I know about your work—your MBST automation project, experience optimizing scripts, reducing effort, solving tricky scrollbar issues, collaborating with your team, and asking thoughtful questions during retrospectives—here’s a complete and tailored draft for all 4 competencies.
+
+
+---
+
+✅ Competency 1
+
+"I work with my manager, product manager, or others to prioritize tasks that add the most value and deliver high-quality results for my customer."
+
+Examples	Results
+
+Identified and proposed an AI-based solution to automate repetitive data extraction from county websites. After discussing with my manager, I prioritized implementing this within the project roadmap while managing my existing sprint tasks.	Successfully deployed the solution, which significantly reduced manual efforts and improved turnaround time for tax data collection, directly benefiting internal teams and customers relying on accurate title information.
+
+
+
+---
+
+✅ Competency 2
+
+"I understand and effectively participate in the core processes of my team (planning, on-call rotations, bug triage, metrics review, etc.)."
+
+Examples	Results
+
+Actively participate in sprint planning, backlog grooming, and retrospective meetings. I help in reviewing user stories for clarity and feasibility, and often assist in identifying edge cases during bug triage.	Contributed to smoother sprint planning and more accurate estimations. My involvement has helped reduce spillovers and ensured early detection of blockers. Successfully delivered my first story without spillover with support from the team.
+
+
+
+---
+
+✅ Competency 3
+
+"With guidance from my manager and Tech lead, I deliver high-quality work on time that adds the most value for the customer and our business."
+
+Examples	Results
+
+Under mentorship, I enhanced an existing MBST automation script, fixing a complex issue involving internal scrollbars that were preventing complete data capture and screenshots.	The solution enabled accurate and complete property tax data capture, improving report quality. This enhanced the business value of the final reports shared with underwriting teams, ensuring better title accuracy.
+
+
+
+---
+
+✅ Competency 4
+
+"I rejuvenate my team by asking the obvious, un-asked questions."
+
+Examples	Results
+
+During team discussions and retrospectives, I regularly ask clarifying questions that uncover assumptions or edge cases others may have overlooked—especially around data inconsistencies in trust names and owner formats.	These questions have led to better script resilience, fewer post-deployment issues, and a shared understanding across the team. It fostered a culture of open discussion and critical thinking, especially in automation-related tasks.
+
+
+
+---
+
+Let me know what you'd like to tweak, and I’ll adjust it accordingly!
+
+
