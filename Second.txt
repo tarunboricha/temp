@@ -1,0 +1,104 @@
+Thanks for sharing this second sheet, Tarun! Based on your background and ongoing work (automation, AI integration, MBST scripting, performance fixes, scroll handling, name pattern recognition using AI, etc.), I’ve drafted the Examples and Results columns for each competency shown in the image.
+
+
+---
+
+✅ Sheet: Craft
+
+Competencies related to Code, Quality, and Scale
+
+
+---
+
+🔹 Category: Code: Writing Code, Understanding Code, Problem Solving, Skills, Tools
+
+1. Competency:
+
+I translate ideas into clear code, written to be read as well as executed.
+
+Examples	Results
+
+Refactored a legacy MBST script to improve readability and modularity by adding meaningful method names, inline documentation, and consistent formatting.	The updated code was easier for teammates to understand, enabling smoother collaboration and faster onboarding of new members.
+
+
+
+---
+
+2. Competency:
+
+I’m capable of reading and navigating functions and classes/modules in a large codebase that I didn’t write.
+
+Examples	Results
+
+While enhancing tax automation scripts, I navigated an existing codebase built by a different team, understood its flow, and integrated new logic for dynamic trust name handling.	Successfully integrated new logic with minimal bugs and no rework, demonstrating adaptability and understanding of unfamiliar codebases.
+
+
+
+---
+
+3. Competency:
+
+I am learning to tackle coding tasks with high throughput while maintaining appropriately high quality; I optimize for either speed or quality, depending on the explicitly stated needs of my team.
+
+Examples	Results
+
+Balanced task prioritization by implementing an AI-based module for property data recognition while concurrently completing sprint stories.	Delivered both features on time. The AI module reduced manual workload by ~90% and was delivered without compromising sprint velocity.
+
+
+
+---
+
+🔹 Category: Quality: Code Review, Testing, Reliability, Performance, Security
+
+4. Competency:
+
+I participate in code reviews and raise questions to help me learn the codebases and technologies relevant to my work.
+
+Examples	Results
+
+During reviews, I actively ask questions about the logic and structure of complex XPath selectors and automation strategies in multi-browser scripts.	Improved understanding of the full pipeline, which helped me contribute more effectively and identify potential failures early.
+
+
+
+---
+
+5. Competency:
+
+My code is free of glaring errors - bugs are in edge cases or design, not mainline paths - and is well documented and well tested with appropriate use of manual vs automated tests.
+
+Examples	Results
+
+Implemented scroll-handling logic for internal web elements that had previously caused failures in data capture. Wrote tests to validate scrolling behavior in different browsers.	Eliminated recurring bug reports related to incomplete screenshots. Improved the robustness of the scraper in high-variance layouts.
+
+
+
+---
+
+🔹 Category: Scale: Design, Architecture, Strategy, Scope
+
+6. Competency:
+
+I can communicate my understanding of a problem and my proposed solution.
+
+Examples	Results
+
+Presented a solution to extract individual names from inconsistent trust name formats using OpenAI's NLP capabilities. Walked the team through multiple examples and edge cases.	The team approved the design, and its implementation significantly improved the name-extraction accuracy across counties.
+
+
+
+---
+
+7. Competency:
+
+I am familiar with deploying working software.
+
+Examples	Results
+
+Handled deployment of updates in GitHub-hosted Angular projects and internal script modules after end-to-end testing. Followed checklist-based deployment protocols.	Ensured clean, error-free deployment with minimal rollback incidents. The updates reached stakeholders on schedule.
+
+
+
+---
+
+Let me know if you'd like this in a copy-paste-ready Excel format or want to tweak wording based on specific accomplishments.
+
