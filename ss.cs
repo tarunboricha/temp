@@ -104,106 +104,136 @@ using (Bitmap elementPart = fullImage.Clone(safeCrop, fullImage.PixelFormat))
 
 
 
-
-
-
 using System;
 using System.Drawing;
 using System.IO;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.Extensions;
+using System.Threading;
 
-public static class ElementScreenshotHelper
+public static class Selenium3ElementScreenshotHelper
 {
     /// <summary>
-    /// Takes a screenshot of a specific WebElement, handling elements with internal scrollbars
+    /// Takes a screenshot of a specific WebElement in Selenium 3, handling elements with internal scrollbars
     /// </summary>
     /// <param name="driver">The WebDriver instance</param>
     /// <param name="element">The WebElement to capture</param>
     /// <param name="scrollToElement">Whether to scroll the element into view first (default: true)</param>
-    /// <param name="captureFullScrollableContent">Whether to capture full content of scrollable elements (default: false)</param>
+    /// <param name="resetElementScroll">Whether to reset element's internal scroll to top (default: true)</param>
     /// <returns>Bitmap image of the element</returns>
     public static Bitmap TakeElementScreenshot(IWebDriver driver, IWebElement element, 
                                              bool scrollToElement = true, 
-                                             bool captureFullScrollableContent = false)
+                                             bool resetElementScroll = true)
     {
         try
         {
+            var jsExecutor = (IJavaScriptExecutor)driver;
+
             // Step 1: Scroll element into view if requested
             if (scrollToElement)
             {
-                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", element);
-                System.Threading.Thread.Sleep(500); // Wait for scroll animation
+                jsExecutor.ExecuteScript("arguments[0].scrollIntoView({block: 'center', behavior: 'smooth'});", element);
+                Thread.Sleep(800); // Wait for smooth scroll animation to complete
             }
 
-            // Step 2: Handle internal scrollbar if element is scrollable
-            if (captureFullScrollableContent && IsElementScrollable(driver, element))
+            // Step 2: Handle internal scrollbar - reset to top if element is scrollable
+            if (resetElementScroll && IsElementScrollable(driver, element))
             {
-                // Scroll to top of the element's content first
-                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollTop = 0;", element);
-                System.Threading.Thread.Sleep(300);
+                // Reset element's internal scroll to top-left
+                jsExecutor.ExecuteScript("arguments[0].scrollTop = 0; arguments[0].scrollLeft = 0;", element);
+                Thread.Sleep(400); // Wait for internal scroll to complete
             }
 
-            // Step 3: Take screenshot using Selenium 4's native method
-            byte[] elementScreenshot = element.GetScreenshotAs(OutputType.BYTES);
+            // Step 3: Take full page screenshot using Selenium 3's TakesScreenshot interface
+            var screenshotDriver = (ITakesScreenshot)driver;
+            byte[] screenshotBytes = screenshotDriver.GetScreenshot().AsByteArray;
 
-            // Step 4: Convert byte array to Bitmap
-            using (var ms = new MemoryStream(elementScreenshot))
+            using (var fullPageImage = new Bitmap(new MemoryStream(screenshotBytes)))
             {
-                return new Bitmap(ms);
+                // Step 4: Get element location and dimensions
+                var elementLocation = element.Location;
+                var elementSize = element.Size;
+
+                // Step 5: Calculate crop area with boundary validation
+                var cropArea = CalculateCropArea(elementLocation, elementSize, fullPageImage.Size);
+
+                // Step 6: Crop the full page image to get element screenshot
+                return CropImage(fullPageImage, cropArea);
             }
         }
         catch (Exception ex)
         {
-            // Fallback to manual crop method for older Selenium versions or if native method fails
-            Console.WriteLine($"Native element screenshot failed, using fallback method: {ex.Message}");
-            return TakeElementScreenshotFallback(driver, element, scrollToElement);
+            throw new Exception($"Failed to capture element screenshot in Selenium 3: {ex.Message}", ex);
         }
     }
 
     /// <summary>
-    /// Fallback method using full page screenshot and cropping (for Selenium 3 compatibility)
+    /// Takes a screenshot of a scrollable element's full content by stitching multiple crops
     /// </summary>
-    private static Bitmap TakeElementScreenshotFallback(IWebDriver driver, IWebElement element, bool scrollToElement)
+    /// <param name="driver">The WebDriver instance</param>
+    /// <param name="element">The scrollable WebElement to capture</param>
+    /// <returns>Bitmap image containing the full scrollable content</returns>
+    public static Bitmap TakeFullScrollableElementScreenshot(IWebDriver driver, IWebElement element)
     {
         try
         {
-            if (scrollToElement)
+            var jsExecutor = (IJavaScriptExecutor)driver;
+
+            // Scroll element into view first
+            jsExecutor.ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", element);
+            Thread.Sleep(500);
+
+            // Get scroll dimensions
+            var scrollHeight = Convert.ToInt32(jsExecutor.ExecuteScript("return arguments[0].scrollHeight;", element));
+            var clientHeight = Convert.ToInt32(jsExecutor.ExecuteScript("return arguments[0].clientHeight;", element));
+            var elementWidth = element.Size.Width;
+
+            // If element is not scrollable, return regular screenshot
+            if (scrollHeight <= clientHeight)
             {
-                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", element);
-                System.Threading.Thread.Sleep(500);
+                return TakeElementScreenshot(driver, element, false, true);
             }
 
-            // Take full page screenshot
-            byte[] screenshotBytes = ((ITakesScreenshot)driver).GetScreenshot().AsByteArray;
+            // Reset scroll to top
+            jsExecutor.ExecuteScript("arguments[0].scrollTop = 0;", element);
+            Thread.Sleep(300);
 
-            using (var fullScreenshot = new Bitmap(new MemoryStream(screenshotBytes)))
+            // Calculate scroll step (75% overlap to avoid missing content)
+            var scrollStep = (int)(clientHeight * 0.75);
+            var screenshots = new List<Bitmap>();
+            var currentScrollTop = 0;
+
+            // Take screenshots while scrolling through content
+            while (currentScrollTop < scrollHeight)
             {
-                // Get element location and size
-                var location = element.Location;
-                var size = element.Size;
+                // Set scroll position
+                jsExecutor.ExecuteScript($"arguments[0].scrollTop = {currentScrollTop};", element);
+                Thread.Sleep(300);
 
-                // Create rectangle for cropping
-                var cropArea = new Rectangle(location.X, location.Y, size.Width, size.Height);
+                // Take screenshot of current view
+                var currentScreenshot = TakeElementScreenshot(driver, element, false, false);
+                screenshots.Add(currentScreenshot);
 
-                // Ensure crop area is within image boundaries
-                cropArea.X = Math.Max(0, cropArea.X);
-                cropArea.Y = Math.Max(0, cropArea.Y);
-                cropArea.Width = Math.Min(cropArea.Width, fullScreenshot.Width - cropArea.X);
-                cropArea.Height = Math.Min(cropArea.Height, fullScreenshot.Height - cropArea.Y);
+                // Calculate next scroll position
+                currentScrollTop += scrollStep;
 
-                // Crop and return the element image
-                return fullScreenshot.Clone(cropArea, fullScreenshot.PixelFormat);
+                // If we've reached the bottom, break
+                if (currentScrollTop >= scrollHeight - clientHeight)
+                {
+                    break;
+                }
             }
+
+            // Stitch all screenshots together
+            return StitchScreenshotsVertically(screenshots, scrollStep, scrollHeight);
         }
         catch (Exception ex)
         {
-            throw new Exception($"Failed to capture element screenshot: {ex.Message}", ex);
+            throw new Exception($"Failed to capture full scrollable element screenshot: {ex.Message}", ex);
         }
     }
 
     /// <summary>
-    /// Checks if an element has internal scrollbars
+    /// Checks if an element has internal scrollable content
     /// </summary>
     private static bool IsElementScrollable(IWebDriver driver, IWebElement element)
     {
@@ -211,10 +241,11 @@ public static class ElementScreenshotHelper
         {
             var jsExecutor = (IJavaScriptExecutor)driver;
 
-            // Check if element has scrollable content (scrollHeight > clientHeight or scrollWidth > clientWidth)
+            // Check for vertical scrollability
             var hasVerticalScroll = (bool)jsExecutor.ExecuteScript(
                 "return arguments[0].scrollHeight > arguments[0].clientHeight;", element);
 
+            // Check for horizontal scrollability
             var hasHorizontalScroll = (bool)jsExecutor.ExecuteScript(
                 "return arguments[0].scrollWidth > arguments[0].clientWidth;", element);
 
@@ -222,82 +253,117 @@ public static class ElementScreenshotHelper
         }
         catch
         {
-            return false;
+            return false; // Assume not scrollable if detection fails
         }
     }
 
     /// <summary>
-    /// Advanced method: Captures full scrollable content by stitching multiple screenshots
-    /// Use this for elements with lots of internal scrollable content
+    /// Calculates the crop area ensuring it stays within image boundaries
     /// </summary>
-    public static Bitmap TakeFullScrollableElementScreenshot(IWebDriver driver, IWebElement element)
+    private static Rectangle CalculateCropArea(Point elementLocation, Size elementSize, Size imageSize)
+    {
+        var cropArea = new Rectangle(elementLocation.X, elementLocation.Y, elementSize.Width, elementSize.Height);
+
+        // Ensure crop area doesn't exceed image boundaries
+        cropArea.X = Math.Max(0, Math.Min(cropArea.X, imageSize.Width - 1));
+        cropArea.Y = Math.Max(0, Math.Min(cropArea.Y, imageSize.Height - 1));
+        cropArea.Width = Math.Max(1, Math.Min(cropArea.Width, imageSize.Width - cropArea.X));
+        cropArea.Height = Math.Max(1, Math.Min(cropArea.Height, imageSize.Height - cropArea.Y));
+
+        return cropArea;
+    }
+
+    /// <summary>
+    /// Crops an image to the specified rectangle
+    /// </summary>
+    private static Bitmap CropImage(Bitmap originalImage, Rectangle cropArea)
     {
         try
         {
-            // Scroll element into view
-            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", element);
-            System.Threading.Thread.Sleep(500);
-
-            var jsExecutor = (IJavaScriptExecutor)driver;
-
-            // Get element's scroll dimensions
-            var scrollHeight = Convert.ToInt32(jsExecutor.ExecuteScript("return arguments[0].scrollHeight;", element));
-            var clientHeight = Convert.ToInt32(jsExecutor.ExecuteScript("return arguments[0].clientHeight;", element));
-
-            if (scrollHeight <= clientHeight)
-            {
-                // Element is not scrollable, take regular screenshot
-                return TakeElementScreenshot(driver, element, false);
-            }
-
-            // Reset scroll position to top
-            jsExecutor.ExecuteScript("arguments[0].scrollTop = 0;", element);
-            System.Threading.Thread.Sleep(300);
-
-            // Take first screenshot
-            var firstScreenshot = TakeElementScreenshot(driver, element, false);
-            var elementWidth = firstScreenshot.Width;
-
-            // Calculate how many screenshots we need
-            var scrollStep = clientHeight * 3 / 4; // 75% overlap to ensure no content is missed
-            var screenshots = new List<Bitmap> { firstScreenshot };
-            var currentScrollTop = 0;
-
-            while (currentScrollTop + clientHeight < scrollHeight)
-            {
-                currentScrollTop += scrollStep;
-                jsExecutor.ExecuteScript($"arguments[0].scrollTop = {currentScrollTop};", element);
-                System.Threading.Thread.Sleep(300);
-
-                screenshots.Add(TakeElementScreenshot(driver, element, false));
-            }
-
-            // Stitch screenshots together (simplified version - in production you'd want better stitching logic)
-            var totalHeight = scrollHeight;
-            var stitchedBitmap = new Bitmap(elementWidth, totalHeight);
-
-            using (var graphics = Graphics.FromImage(stitchedBitmap))
-            {
-                var currentY = 0;
-                for (int i = 0; i < screenshots.Count; i++)
-                {
-                    var screenshot = screenshots[i];
-                    var drawHeight = (i == screenshots.Count - 1) ? 
-                        Math.Min(screenshot.Height, totalHeight - currentY) : scrollStep;
-
-                    graphics.DrawImage(screenshot, 0, currentY, elementWidth, drawHeight);
-                    currentY += scrollStep;
-                }
-            }
-
-            // Cleanup
-            screenshots.ForEach(s => s.Dispose());
-
-            return stitchedBitmap;
+            return originalImage.Clone(cropArea, originalImage.PixelFormat);
         }
         catch (Exception ex)
         {
-            throw new Exception($"Failed to capture full scrollable element screenshot: {ex.Message}", ex);
+            throw new Exception($"Failed to crop image. Crop area: {cropArea}, Image size: {originalImage.Size}. Error: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Stitches multiple screenshots together vertically with proper overlap handling
+    /// </summary>
+    private static Bitmap StitchScreenshotsVertically(List<Bitmap> screenshots, int scrollStep, int totalHeight)
+    {
+        if (screenshots.Count == 0)
+            throw new ArgumentException("No screenshots to stitch");
+
+        if (screenshots.Count == 1)
+            return new Bitmap(screenshots[0]); // Return copy of single screenshot
+
+        var width = screenshots[0].Width;
+        var stitchedImage = new Bitmap(width, totalHeight);
+
+        using (var graphics = Graphics.FromImage(stitchedImage))
+        {
+            graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+            graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+
+            var currentY = 0;
+            for (int i = 0; i < screenshots.Count; i++)
+            {
+                var screenshot = screenshots[i];
+
+                if (i == 0)
+                {
+                    // First image - draw completely
+                    graphics.DrawImage(screenshot, 0, 0);
+                    currentY = scrollStep;
+                }
+                else if (i == screenshots.Count - 1)
+                {
+                    // Last image - calculate remaining height
+                    var remainingHeight = totalHeight - currentY;
+                    var sourceRect = new Rectangle(0, screenshot.Height - remainingHeight, width, remainingHeight);
+                    var destRect = new Rectangle(0, currentY, width, remainingHeight);
+                    graphics.DrawImage(screenshot, destRect, sourceRect, GraphicsUnit.Pixel);
+                }
+                else
+                {
+                    // Middle images - draw with overlap consideration
+                    var overlapHeight = screenshot.Height - scrollStep;
+                    var sourceRect = new Rectangle(0, overlapHeight, width, scrollStep);
+                    var destRect = new Rectangle(0, currentY, width, scrollStep);
+                    graphics.DrawImage(screenshot, destRect, sourceRect, GraphicsUnit.Pixel);
+                    currentY += scrollStep;
+                }
+            }
+        }
+
+        // Cleanup temporary screenshots
+        screenshots.ForEach(s => s.Dispose());
+
+        return stitchedImage;
+    }
+
+    /// <summary>
+    /// Helper method to get element info for debugging
+    /// </summary>
+    public static string GetElementInfo(IWebDriver driver, IWebElement element)
+    {
+        try
+        {
+            var jsExecutor = (IJavaScriptExecutor)driver;
+            var location = element.Location;
+            var size = element.Size;
+            var scrollHeight = jsExecutor.ExecuteScript("return arguments[0].scrollHeight;", element);
+            var clientHeight = jsExecutor.ExecuteScript("return arguments[0].clientHeight;", element);
+            var isScrollable = IsElementScrollable(driver, element);
+
+            return $"Element Info - Location: ({location.X}, {location.Y}), Size: {size.Width}x{size.Height}, " +
+                   $"ScrollHeight: {scrollHeight}, ClientHeight: {clientHeight}, IsScrollable: {isScrollable}";
+        }
+        catch (Exception ex)
+        {
+            return $"Failed to get element info: {ex.Message}";
         }
     }
 }
