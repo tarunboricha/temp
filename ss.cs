@@ -60,3 +60,25 @@ public static class ElementScreenshotHelper
         finalImage.Save(filePath, ImageFormat.Png);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+int safeWidth = Math.Min(cropArea.Width, fullImage.Width - cropArea.X);
+int safeHeight = Math.Min(cropArea.Height, fullImage.Height - cropArea.Y);
+
+Rectangle safeCrop = new Rectangle(cropArea.X, cropArea.Y, safeWidth, safeHeight);
+
+using (Bitmap elementPart = fullImage.Clone(safeCrop, fullImage.PixelFormat))
+{
+    g.DrawImage(elementPart, x, y);
+}
