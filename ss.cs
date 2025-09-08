@@ -1,64 +1,63 @@
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-
-public static class ElementScreenshotHelper
+public static void CaptureFullElementScreenshot(IWebDriver driver, IWebElement element, string filePath)
 {
-    public static void CaptureFullElementScreenshot(IWebDriver driver, IWebElement element, string filePath)
+    IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+
+    // Get element scroll sizes
+    int scrollHeight = Convert.ToInt32(js.ExecuteScript("return arguments[0].scrollHeight", element));
+    int clientHeight = Convert.ToInt32(js.ExecuteScript("return arguments[0].clientHeight", element));
+
+    int scrollWidth = Convert.ToInt32(js.ExecuteScript("return arguments[0].scrollWidth", element));
+    int clientWidth = Convert.ToInt32(js.ExecuteScript("return arguments[0].clientWidth", element));
+
+    // Get element location in viewport
+    var elementLocation = element.Location;
+
+    // Prepare final stitched image
+    Bitmap finalImage = new Bitmap(scrollWidth, scrollHeight);
+
+    using (Graphics g = Graphics.FromImage(finalImage))
     {
-        IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-
-        // Get element scroll sizes
-        int scrollHeight = Convert.ToInt32(js.ExecuteScript("return arguments[0].scrollHeight", element));
-        int clientHeight = Convert.ToInt32(js.ExecuteScript("return arguments[0].clientHeight", element));
-
-        int scrollWidth = Convert.ToInt32(js.ExecuteScript("return arguments[0].scrollWidth", element));
-        int clientWidth = Convert.ToInt32(js.ExecuteScript("return arguments[0].clientWidth", element));
-
-        // Get element location on page
-        var elementLocation = element.Location;
-
-        // Prepare a big blank image
-        Bitmap finalImage = new Bitmap(scrollWidth, scrollHeight);
-
-        using (Graphics g = Graphics.FromImage(finalImage))
+        for (int y = 0; y < scrollHeight; y += clientHeight)
         {
-            for (int y = 0; y < scrollHeight; y += clientHeight)
+            for (int x = 0; x < scrollWidth; x += clientWidth)
             {
-                for (int x = 0; x < scrollWidth; x += clientWidth)
+                // Scroll inside element
+                js.ExecuteScript($"arguments[0].scrollTo({x}, {y});", element);
+                System.Threading.Thread.Sleep(200); // let rendering settle
+
+                // Full screenshot of page
+                Screenshot screenshot = ((ITakesScreenshot)driver).GetScreenshot();
+                using (MemoryStream memStream = new MemoryStream(screenshot.AsByteArray))
+                using (Bitmap fullImage = new Bitmap(memStream))
                 {
-                    // Scroll inside the element
-                    js.ExecuteScript($"arguments[0].scrollTo({x}, {y});", element);
-                    System.Threading.Thread.Sleep(200); // small delay to let scroll render
+                    // Define crop area in the screenshot
+                    Rectangle cropArea = new Rectangle(
+                        elementLocation.X,
+                        elementLocation.Y,
+                        Math.Min(clientWidth, scrollWidth - x),
+                        Math.Min(clientHeight, scrollHeight - y)
+                    );
 
-                    // Take full screenshot
-                    Screenshot screenshot = ((ITakesScreenshot)driver).GetScreenshot();
-                    using (MemoryStream memStream = new MemoryStream(screenshot.AsByteArray))
-                    using (Bitmap fullImage = new Bitmap(memStream))
+                    // Clamp crop area to image bounds
+                    int safeWidth = Math.Min(cropArea.Width, fullImage.Width - cropArea.X);
+                    int safeHeight = Math.Min(cropArea.Height, fullImage.Height - cropArea.Y);
+
+                    if (safeWidth > 0 && safeHeight > 0)
                     {
-                        // Crop only visible part of element
-                        Rectangle cropArea = new Rectangle(
-                            elementLocation.X,
-                            elementLocation.Y,
-                            Math.Min(clientWidth, scrollWidth - x),
-                            Math.Min(clientHeight, scrollHeight - y)
-                        );
+                        Rectangle safeCrop = new Rectangle(cropArea.X, cropArea.Y, safeWidth, safeHeight);
 
-                        using (Bitmap elementPart = fullImage.Clone(cropArea, fullImage.PixelFormat))
+                        using (Bitmap elementPart = fullImage.Clone(safeCrop, fullImage.PixelFormat))
                         {
-                            // Paste it into final image at the right place
+                            // Place cropped chunk into the correct spot
                             g.DrawImage(elementPart, x, y);
                         }
                     }
                 }
             }
         }
-
-        finalImage.Save(filePath, ImageFormat.Png);
     }
+
+    finalImage.Save(filePath, ImageFormat.Png);
 }
 
 
